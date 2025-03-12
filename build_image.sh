@@ -6,6 +6,6 @@ pushd ${RootPath}
 
 source prepare.sh
 
-docker build . -t naturalselect/minecraft_server:${TAG}
+docker build . -t naturalselect/minecraft_server:${TAG} -f docker/Dockerfile
 
 popd

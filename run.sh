@@ -1,30 +1,19 @@
 #!/bin/bash
 
-SERVER_PATH="/server"
+source version.sh
 
-TEMPLATE_PATH="/root/template"
+ROOT_PATH=$(cd $(dirname ${BASH_SOURCE[0]}); pwd)
 
-set -e
 
-function main() {
-    if test ! -d ${SERVER_PATH}
-    then
-        echo "Please mount ${SERVER_PATH} to your server directory"
-        exit 1
-    fi
+if test -z ${SERVER_PATH}
+then
+    SERVER_PATH="${ROOT_PATH}/server"
+fi
 
-    pushd ${SERVER_PATH}
-
-    if test ! -f "run.sh"
-    then
-        echo "run.sh not found in ${SERVER_PATH}, copy from template"
-        cp -r ${TEMPLATE_PATH}/* ${SERVER_PATH}
-        chmod +x run.sh
-    fi
-
-    ./run.sh
-
-    popd
-}
-
-main
+docker run \
+    --rm \
+    -it \
+    -v ${SERVER_PATH}:/server \
+    -e TZ="Asia/Shanghai" \
+    -v /etc/localtime:/etc/localtime:ro \
+    naturalselect/minecraft_server:${TAG} \
